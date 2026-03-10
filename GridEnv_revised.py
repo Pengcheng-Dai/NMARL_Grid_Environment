@@ -20,10 +20,10 @@ class GridEnv:
 
     def reset(self):
         # self.agent_positions = np.array([[2, 1], [3, 1], [2, 2], [1, 0]])
-        self.agent_positions = self.ini_state
+        self.agent_positions = self.ini_state.copy()
         self.done = [False] * self.num_agents
-        self.global_state = self.ini_state
-        self.global_state_history = [self.ini_state]
+        self.global_state = self.ini_state.copy()
+        self.global_state_history = [self.ini_state.copy()]
         self.global_action = None
         self.global_action_history = []
         self.global_reward = None
@@ -53,7 +53,7 @@ class GridEnv:
                 rewards[i] = 0
                 continue
 
-            neighbors = self.get_neighbors(i, k=1)
+            neighbors = self.get_neighbors(i, k=1) # 状态转移和一阶邻居有关
             neighbor_at_goal = any(
                 np.linalg.norm(self.agent_positions[j] - self.goal, ord=2) == 0 for j in neighbors
             )
@@ -81,7 +81,7 @@ class GridEnv:
 
             new_pos = self.agent_positions[i] + base_move + epsilon
             new_pos = np.clip(new_pos, 0, self.grid_size - 1)
-            self.agent_positions[i] = new_pos
+            self.agent_positions[i] = new_pos # 智能体位置的改变
 
             if np.linalg.norm(new_pos - self.goal, ord=2) == 0:
                 self.done[i] = True
